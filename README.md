@@ -17,10 +17,10 @@ git clone https://github.com/username/repo-name.git
 ```bash 
 pip install -r requirements.txt
 ```
-3.Create a PostgreSQL databaase and update the credentials in the `.env` file:
+3.Create a PostgreSQL database and update the credentials in the `.env` file:
   
   ```bash
-  DATABASE_HOSTNAME=localhost
+DATABASE_HOSTNAME=localhost
 DATABASE_PORT=5432
 DATABASE_PASSWORD=''
 DATABASE_NAME=Employee_Attendance
