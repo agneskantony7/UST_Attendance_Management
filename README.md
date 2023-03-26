@@ -27,6 +27,8 @@ DATABASE_NAME=Employee_Attendance
 DATABASE_USERNAME=postgres
 ```
 
+Add .env file path in config.py file
+
 3.Start the Application
 
 Upload Datafile
