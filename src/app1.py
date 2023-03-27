@@ -34,7 +34,8 @@ app.add_middleware(
 # templates = Jinja2Templates(directory="templates")
 def process_file(file: UploadFile):
     df = read_data(file)
-    df = df[~df['in_time'].isin([None, '', ' ', 'L', 'Leave']) & ~df['out_time'].isin([None, '', ' ', 'L', 'Leave'])]
+    df = df.dropna(inplace=False)
+    #df = df[~df['in_time'].isin([None, '', ' ', 'L', 'Leave']) & ~df['out_time'].isin([None, '', ' ', 'L', 'Leave'])]
     employee_attendance = df.groupby(['company_id', 'employee_id']).apply(
         lambda x: x[['company_id', 'employee_id', 'employee_name', 'in_time', 'out_time']].values.tolist())
     with ThreadPoolExecutor(max_workers=4) as executor:
