@@ -48,6 +48,7 @@ uvicorn app:app --reload
 
 
 #### Dataset: Attendance_Datasheet.csv
+`` Columns: company_id,employee_id,employee_name,in_time,out_time``
 
 ## API Reference
 
