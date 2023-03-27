@@ -3,6 +3,7 @@ import pandas as pd
 from config import settings
 import psycopg2
 from sqlalchemy import create_engine,text
+from concurrent.futures import ThreadPoolExecutor
 
 
 def calculate_working_days(employee_data):
@@ -62,4 +63,8 @@ def self():
     query = "SELECT * FROM attendance_data;"
     df = pd.read_sql_query(sql=text(query), con=engine.connect())
     engine.dispose()
-    calculate_working_days(('employee_id', df))
+    #calculate_working_days(('employee_id', df))
+    employee_attendance = df.groupby(['company_id', 'employee_id']).apply(
+        lambda x: x[['company_id', 'employee_id', 'employee_name', 'in_time', 'out_time']].values.tolist())
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        executor.map(calculate_working_days, employee_attendance.items())
