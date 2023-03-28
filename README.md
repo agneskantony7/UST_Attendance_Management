@@ -119,9 +119,4 @@ year: 2022
 
 ### Images
 
-<img src="images/Screenshot%20(188).png" >
-
-![](images/Screenshot%20(188).png)
-
-![](images/Screenshot%20(189).png)
-
+![Screenshot (188)](https://user-images.githubusercontent.com/100524100/228151194-7a3a98b3-53aa-4690-9f07-2fa520fc5df6.png)
