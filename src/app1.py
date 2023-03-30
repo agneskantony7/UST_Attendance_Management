@@ -1,9 +1,12 @@
 from fastapi import FastAPI,Response, status, HTTPException, UploadFile,File,Depends, Request, Form
 from process1 import data_filter,read_data
-from processing import calculate_working_days,self
+from processing import workcall 
 from concurrent.futures import ThreadPoolExecutor
 from sqlalchemy.orm import Session
 import models
+import schemas
+from fastapi.encoders import jsonable_encoder
+from typing import List
 from database import engine,get_db,SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -44,11 +47,38 @@ def process_file(file: UploadFile):
 
 @app.post("/uploadfile/")
 async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    await asyncio.sleep(5)
     process_file(file)
-    self()
+    await asyncio.sleep(5)
+    workcall()
     response = JSONResponse(content={"filename": file.filename, "status": "uploaded successfully"})
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
+
+
+
+@app.get('/record/viewattendance/{employee_id}/{company_id}/{year}', status_code=status.HTTP_302_FOUND, response_model=schemas.Response)
+def get_record(employee_id: int, company_id: int, year: int, db: Session = Depends(get_db)):
+    record = db.query(models.AttendanceReport).filter(models.AttendanceReport.employee_id == employee_id, models.AttendanceReport.company_id == company_id, models.AttendanceReport.year == year).first()
+    if not record:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Record not found")
+    return record
+    record_dict = record.__dict__
+    record_dict.pop('_sa_instance_state')
+    record_dict['company_id'] = company_id
+    record_dict['year'] = year
+    headers = {
+        "Access-Control-Allow-Origin": "*"
+    }
+
+    return JSONResponse(content=record_dict, headers=headers)
+
+
+
+@app.get('/record/view/{company_id}',status_code=status.HTTP_302_FOUND,response_model=List[schemas.Response])
+def get_company_record(company_id: int, db:Session = Depends(get_db)):
+    record = db.query(models.AttendanceReport).filter(models.AttendanceReport.company_id == company_id).all()
+    if not record:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Record not found")
+    return jsonable_encoder(record)
 
 
