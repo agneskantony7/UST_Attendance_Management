@@ -56,7 +56,7 @@ def calculate_working_days(employee_data):
     return df
 
 
-def self():
+def workcall():
     engine = sqlalchemy.create_engine(
         f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
     )
